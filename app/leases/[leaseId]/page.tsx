@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { invoiceStatus } from "@/lib/billing";
 import { MalaysiaTimeDisplay } from "@/components/malaysia-time";
+import { formatRinggit } from "@/lib/dates";
 import { RecordPaymentDialog } from "@/components/record-payment-dialog";
 import { PaymentActions } from "@/components/payment-actions";
 import { Badge } from "@/components/ui/badge";
@@ -174,8 +175,8 @@ export default async function LeaseDetailPage({
               <MalaysiaTimeDisplay date={lease.startDate} /> → <MalaysiaTimeDisplay date={lease.endDate} />
             </div>
             <div className="text-xs text-neutral-400 mt-2 space-y-0.5">
-              <p>Monthly: <strong className="text-white font-mono">RM {(Number(lease.monthlyRentSen) / 100).toFixed(2)}</strong></p>
-              <p>Deposit: <strong className="text-emerald-400 font-mono">RM {(Number(lease.depositSen) / 100).toFixed(2)}</strong></p>
+              <p>Monthly: <strong className="text-white font-mono">RM {formatRinggit(lease.monthlyRentSen)}</strong></p>
+              <p>Deposit: <strong className="text-emerald-400 font-mono">RM {formatRinggit(lease.depositSen)}</strong></p>
             </div>
           </div>
 
@@ -190,10 +191,10 @@ export default async function LeaseDetailPage({
               </div>
             </div>
             <div className="text-2xl font-extrabold text-white font-mono">
-              RM {(totalInvoiceSen / 100).toFixed(2)}
+              RM {formatRinggit(totalInvoiceSen)}
             </div>
             <div className="flex items-center justify-between text-xs text-neutral-400 mt-2">
-              <span>Paid: <strong className="text-emerald-400 font-mono">RM {(totalPaidSen / 100).toFixed(2)}</strong></span>
+              <span>Paid: <strong className="text-emerald-400 font-mono">RM {formatRinggit(totalPaidSen)}</strong></span>
               <span className="text-emerald-400 font-medium text-[11px]">
                 {totalInvoiceSen > 0 ? `${Math.round((totalPaidSen / totalInvoiceSen) * 100)}%` : "0%"}
               </span>
@@ -211,7 +212,7 @@ export default async function LeaseDetailPage({
               </div>
             </div>
             <div className="text-2xl font-extrabold text-amber-400 font-mono">
-              RM {(remainingBalanceSen / 100).toFixed(2)}
+              RM {formatRinggit(remainingBalanceSen)}
             </div>
             <div className="text-xs text-neutral-400 mt-2">
               <span>Across all scheduled periods</span>
@@ -266,13 +267,13 @@ export default async function LeaseDetailPage({
                       <MalaysiaTimeDisplay date={inv.dueDate} />
                     </TableCell>
                     <TableCell className="font-bold text-white font-mono">
-                      RM {(inv.amountSen / 100).toFixed(2)}
+                      RM {formatRinggit(inv.amountSen)}
                     </TableCell>
                     <TableCell className="text-emerald-400 font-mono font-medium">
-                      RM {(inv.paidSen / 100).toFixed(2)}
+                      RM {formatRinggit(inv.paidSen)}
                     </TableCell>
                     <TableCell className="text-neutral-400 font-mono">
-                      RM {((inv.amountSen - inv.paidSen) / 100).toFixed(2)}
+                      RM {formatRinggit(inv.amountSen - inv.paidSen)}
                     </TableCell>
                     <TableCell>
                       <Badge
@@ -338,10 +339,10 @@ export default async function LeaseDetailPage({
                         {p.method.replace("_", " ")}
                       </TableCell>
                       <TableCell className="font-bold text-emerald-400 font-mono">
-                        RM {(Number(p.amountSen) / 100).toFixed(2)}
+                        RM {formatRinggit(p.amountSen)}
                       </TableCell>
                       <TableCell className="text-neutral-400 font-mono">
-                        RM {(Number(p.unappliedSen) / 100).toFixed(2)}
+                        RM {formatRinggit(p.unappliedSen)}
                       </TableCell>
                       <TableCell className="text-neutral-300 font-mono">
                         <MalaysiaTimeDisplay date={p.receivedAt} type="datetime" />

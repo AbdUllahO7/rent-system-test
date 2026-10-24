@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { invoiceStatus } from "@/lib/billing";
 import { getCollectionsReport } from "@/lib/reports";
 import { MalaysiaTimeDisplay } from "@/components/malaysia-time";
+import { formatRinggit } from "@/lib/dates";
 import { CreateLeaseDialog } from "@/components/create-lease-dialog";
 import { RecordPaymentDialog } from "@/components/record-payment-dialog";
 import { TenantProfileCard } from "@/components/tenant-profile-card";
@@ -456,10 +457,10 @@ export default async function DashboardPage() {
                           <MalaysiaTimeDisplay date={l.startDate} /> → <MalaysiaTimeDisplay date={l.endDate} />
                         </TableCell>
                         <TableCell className="font-bold font-mono text-white">
-                          RM {(Number(l.monthlyRentSen) / 100).toFixed(2)}
+                          RM {formatRinggit(l.monthlyRentSen)}
                         </TableCell>
                         <TableCell className="font-bold font-mono text-emerald-400">
-                          RM {(Number(l.depositSen) / 100).toFixed(2)}
+                          RM {formatRinggit(l.depositSen)}
                         </TableCell>
                         <TableCell className="text-neutral-300">
                           <span className="px-2 py-0.5 rounded-md bg-white/[0.04] text-[11px]">
@@ -517,7 +518,7 @@ export default async function DashboardPage() {
                       </div>
                       <p className="text-xs text-neutral-400 mt-1">
                         Term: <MalaysiaTimeDisplay date={lease.startDate} /> to{" "}
-                        <MalaysiaTimeDisplay date={lease.endDate} /> • Rent: <span className="text-white font-mono font-semibold">RM {(Number(lease.monthlyRentSen) / 100).toFixed(2)}/mo</span> • Deposit: <span className="text-emerald-400 font-mono font-semibold">RM {(Number(lease.depositSen) / 100).toFixed(2)}</span>
+                        <MalaysiaTimeDisplay date={lease.endDate} /> • Rent: <span className="text-white font-mono font-semibold">RM {formatRinggit(lease.monthlyRentSen)}/mo</span> • Deposit: <span className="text-emerald-400 font-mono font-semibold">RM {formatRinggit(lease.depositSen)}</span>
                       </p>
                     </div>
 
@@ -576,10 +577,10 @@ export default async function DashboardPage() {
                                   <MalaysiaTimeDisplay date={inv.dueDate} />
                                 </TableCell>
                                 <TableCell className="font-bold text-white font-mono">
-                                  RM {(inv.amountSen / 100).toFixed(2)}
+                                  RM {formatRinggit(inv.amountSen)}
                                 </TableCell>
                                 <TableCell className="text-emerald-400 font-mono font-semibold">
-                                  RM {(inv.paidSen / 100).toFixed(2)}
+                                  RM {formatRinggit(inv.paidSen)}
                                 </TableCell>
                                 <TableCell>
                                   <Badge
@@ -640,10 +641,10 @@ export default async function DashboardPage() {
                                     {p.method.replace("_", " ")}
                                   </TableCell>
                                   <TableCell className="font-bold text-emerald-400 font-mono">
-                                    RM {(Number(p.amountSen) / 100).toFixed(2)}
+                                    RM {formatRinggit(p.amountSen)}
                                   </TableCell>
                                   <TableCell className="text-neutral-400 font-mono">
-                                    RM {(Number(p.unappliedSen) / 100).toFixed(2)}
+                                    RM {formatRinggit(p.unappliedSen)}
                                   </TableCell>
                                   <TableCell className="text-neutral-300 font-mono">
                                     <MalaysiaTimeDisplay date={p.receivedAt} type="datetime" />
@@ -741,7 +742,7 @@ export default async function DashboardPage() {
                         Amount Due Now (MYT Today)
                       </span>
                       <div className="text-3xl font-extrabold font-mono mt-1 text-white">
-                        RM {(aisyahAmountDueNowSen / 100).toFixed(2)}
+                        RM {formatRinggit(aisyahAmountDueNowSen)}
                       </div>
                       <span className="text-[11px] text-emerald-100/70 mt-1 block">
                         Includes all unpaid invoices due on or before today
@@ -794,10 +795,10 @@ export default async function DashboardPage() {
                                   <MalaysiaTimeDisplay date={inv.dueDate} />
                                 </TableCell>
                                 <TableCell className="font-bold text-white font-mono">
-                                  RM {(amountSen / 100).toFixed(2)}
+                                  RM {formatRinggit(amountSen)}
                                 </TableCell>
                                 <TableCell className="text-emerald-400 font-mono font-medium">
-                                  RM {(paidSen / 100).toFixed(2)}
+                                  RM {formatRinggit(paidSen)}
                                 </TableCell>
                                 <TableCell>
                                   <Badge
@@ -846,7 +847,7 @@ export default async function DashboardPage() {
                               <TableCell className="font-mono text-neutral-400">{p.id}</TableCell>
                               <TableCell className="capitalize text-white">{p.method.replace("_", " ")}</TableCell>
                               <TableCell className="font-bold text-emerald-400 font-mono">
-                                RM {(Number(p.amountSen) / 100).toFixed(2)}
+                                RM {formatRinggit(p.amountSen)}
                               </TableCell>
                               <TableCell className="text-neutral-300 font-mono">
                                 <MalaysiaTimeDisplay date={p.receivedAt} type="datetime" />

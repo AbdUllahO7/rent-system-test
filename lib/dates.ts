@@ -85,3 +85,16 @@ export function formatDateDisplay(
   }).format(d);
 }
 
+/**
+ * Formats integer sen (bigint or number) into standard Malaysian Ringgit format
+ * with comma thousand separator and two decimal places (e.g. 150000 -> "1,500.00").
+ */
+export function formatRinggit(sen: number | bigint): string {
+  const amount = Number(sen) / 100;
+  return amount.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+
