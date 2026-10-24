@@ -24,7 +24,13 @@ export async function POST(
       throw new AuthError("Lease not found", 404);
     }
 
-    if (auth.role !== "tenant" || lease.tenantId !== auth.tenantId) {
+    // Another tenant's record gets 404 (do not reveal existence)
+    if (auth.role === "tenant" && lease.tenantId !== auth.tenantId) {
+      throw new AuthError("Lease not found", 404);
+    }
+
+    // Role does not allow this action (manager/staff) gets 403
+    if (auth.role !== "tenant") {
       throw new AuthError("Forbidden: Only the lease tenant can create a gateway bill", 403);
     }
 
