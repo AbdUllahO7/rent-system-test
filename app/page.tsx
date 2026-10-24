@@ -6,6 +6,7 @@ import { getCollectionsReport } from "@/lib/reports";
 import { formatMalaysiaDate, formatMalaysiaDateTime } from "@/lib/dates";
 import { MalaysiaTimeDisplay } from "@/components/malaysia-time";
 import { RecordPaymentDialog } from "@/components/record-payment-dialog";
+import { CreateLeaseDialog } from "@/components/create-lease-dialog";
 import { PaymentActions } from "@/components/payment-actions";
 import { TenantProfileCard } from "@/components/tenant-profile-card";
 import { TenantPayNow } from "@/components/tenant-pay-now";
@@ -292,12 +293,20 @@ export default async function HomePage() {
             </TabsList>
 
             {managerMember && (
-              <RecordPaymentDialog
-                orgId={orgId}
-                actorId={managerMember.userId}
-                actorRole="manager"
-                leases={leaseOptions}
-              />
+              <div className="flex items-center gap-2">
+                <CreateLeaseDialog
+                  orgId={orgId}
+                  actorId={managerMember.userId}
+                  units={activeOrg?.units.map((u) => ({ id: u.id, name: u.name })) ?? []}
+                  tenants={activeOrg?.tenants.map((t) => ({ id: t.id, fullName: t.fullName })) ?? []}
+                />
+                <RecordPaymentDialog
+                  orgId={orgId}
+                  actorId={managerMember.userId}
+                  actorRole="manager"
+                  leases={leaseOptions}
+                />
+              </div>
             )}
           </div>
 

@@ -15,7 +15,8 @@ export async function POST(req: NextRequest) {
       fields[key] = val;
     }
 
-    const signature = fields.x_signature;
+    const headerSig = req.headers.get("x-signature") || req.headers.get("X-Signature");
+    const signature = headerSig || fields.x_signature;
     const secretKey = process.env.GATEWAY_X_SIGNATURE_KEY;
 
     if (!signature || !secretKey) {
@@ -28,10 +29,14 @@ export async function POST(req: NextRequest) {
       .filter((k) => k !== "x_signature")
       .sort();
 
-    const source = sortedKeys.map((k) => `${k}${fields[k]}`).join("|");
-    const expectedSig = crypto.createHmac("sha256", secretKey).update(source).digest("hex");
+    const sourceWithEquals = sortedKeys.map((k) => `${k}=${fields[k]}`).join("|");
+    const expectedSigWithEquals = crypto.createHmac("sha256", secretKey).update(sourceWithEquals).digest("hex");
 
-    if (signature !== expectedSig) {
+    const sourceNoEquals = sortedKeys.map((k) => `${k}${fields[k]}`).join("|");
+    const expectedSigNoEquals = crypto.createHmac("sha256", secretKey).update(sourceNoEquals).digest("hex");
+
+    const validSig = signature === expectedSigWithEquals || signature === expectedSigNoEquals;
+    if (!validSig) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
