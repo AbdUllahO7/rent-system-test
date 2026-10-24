@@ -174,14 +174,14 @@ export function RecordPaymentDialog({
       <DialogTrigger
         render={
           (triggerButton as React.ReactElement | undefined) ?? (
-            <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center gap-1.5 shadow-sm">
+            <Button className="h-9 px-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-semibold text-xs flex items-center gap-1.5 shadow-lg shadow-emerald-600/20 transition-all">
               <CreditCard className="h-3.5 w-3.5" />
               Record Payment
             </Button>
           )
         }
       />
-      <DialogContent className="sm:max-w-md bg-neutral-900 border-neutral-800 text-neutral-100">
+      <DialogContent className="sm:max-w-md glass-card border-white/[0.1] text-neutral-100 rounded-3xl p-6 shadow-2xl">
         <DialogHeader>
           <DialogTitle className="text-base flex items-center gap-2 text-white">
             <CreditCard className="h-4 w-4 text-emerald-400" />

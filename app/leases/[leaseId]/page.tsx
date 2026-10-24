@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { invoiceStatus } from "@/lib/billing";
@@ -8,20 +7,31 @@ import { RecordPaymentDialog } from "@/components/record-payment-dialog";
 import { PaymentActions } from "@/components/payment-actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
-  ArrowLeft,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
   Building2,
-  Receipt,
+  Calendar,
   CreditCard,
-  User,
-  Phone,
-  Mail,
   FileText,
+  Mail,
+  Phone,
+  Receipt,
+  ArrowLeft,
   ExternalLink,
   ShieldCheck,
+  Clock,
+  CheckCircle2,
+  AlertTriangle,
+  User,
 } from "lucide-react";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -72,16 +82,16 @@ export default async function LeaseDetailPage({
   const remainingBalanceSen = totalInvoiceSen - totalPaidSen;
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 p-4 md:p-8 font-sans">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Navigation & Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-800">
+    <div className="min-h-screen text-neutral-100 font-sans pb-16">
+      {/* Top Floating Glass Navigation */}
+      <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#090c15]/80 border-b border-white/[0.08] px-4 sm:px-8 py-3.5 transition-all">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link href="/">
               <Button
                 variant="outline"
                 size="sm"
-                className="h-9 px-3 border-neutral-700 bg-neutral-900 text-neutral-300 hover:text-white"
+                className="h-9 px-3.5 border-white/[0.12] bg-white/[0.04] text-neutral-300 hover:text-white hover:bg-white/[0.08] rounded-xl transition-all"
               >
                 <ArrowLeft className="h-4 w-4 mr-1.5" />
                 Back to Dashboard
@@ -89,278 +99,303 @@ export default async function LeaseDetailPage({
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-white flex items-center gap-2">
+                <span className="font-extrabold text-lg tracking-tight text-white flex items-center gap-2">
                   <Building2 className="h-5 w-5 text-emerald-400" />
                   Unit {lease.unit.name}
-                </h1>
-                <Badge variant="outline" className="text-xs border-emerald-500/30 text-emerald-400">
+                </span>
+                <span className="text-neutral-500">•</span>
+                <Badge variant="outline" className="text-xs border-emerald-500/30 text-emerald-400 bg-emerald-500/10">
                   {lease.organization.name}
                 </Badge>
               </div>
-              <p className="text-xs text-neutral-400">Lease ID: {lease.id}</p>
+              <p className="text-xs text-neutral-400 font-mono">Lease ID: {lease.id}</p>
             </div>
           </div>
 
-          {/* Record payment for this lease */}
-          {managerMember && (
-            <RecordPaymentDialog
-              orgId={lease.orgId}
-              actorId={managerMember.userId}
-              actorRole="manager"
-              leases={[
-                {
-                  id: lease.id,
-                  unitName: lease.unit.name,
-                  tenantName: lease.tenant.fullName,
-                  monthlyRentSen: Number(lease.monthlyRentSen),
-                },
-              ]}
-              preselectedLeaseId={lease.id}
-            />
-          )}
+          <div className="flex items-center gap-3">
+            {managerMember && (
+              <RecordPaymentDialog
+                orgId={lease.orgId}
+                actorId={managerMember.userId}
+                actorRole="manager"
+                leases={[
+                  {
+                    id: lease.id,
+                    unitName: lease.unit.name,
+                    tenantName: lease.tenant.fullName,
+                    monthlyRentSen: Number(lease.monthlyRentSen),
+                  },
+                ]}
+                preselectedLeaseId={lease.id}
+              />
+            )}
+          </div>
         </div>
+      </header>
 
+      {/* Main Container */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-8">
         {/* Lease Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-neutral-900 border-neutral-800 text-white">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs text-neutral-400 font-medium">Tenant Details</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-base font-bold text-white">{lease.tenant.fullName}</div>
-              <div className="text-xs text-neutral-400 mt-1 space-y-0.5">
-                <div className="flex items-center gap-1.5">
-                  <Mail className="h-3 w-3 text-neutral-500" />
-                  <span>{lease.tenant.email}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Phone className="h-3 w-3 text-emerald-400" />
-                  <span className="font-mono">{lease.tenant.phone}</span>
-                </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          {/* Card 1: Tenant Details */}
+          <div className="glass-card glass-card-hover rounded-2xl p-5 relative overflow-hidden group">
+            <div className="flex items-center justify-between pb-3">
+              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                Tenant Profile
+              </span>
+              <div className="h-8 w-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <User className="h-4 w-4" />
               </div>
-            </CardContent>
-          </Card>
+            </div>
+            <div className="text-lg font-bold text-white">{lease.tenant.fullName}</div>
+            <div className="text-xs text-neutral-400 mt-2 space-y-1">
+              <div className="flex items-center gap-1.5 truncate">
+                <Mail className="h-3 w-3 text-neutral-500" />
+                <span className="truncate">{lease.tenant.email}</span>
+              </div>
+              <div className="flex items-center gap-1.5 font-mono text-emerald-400">
+                <Phone className="h-3 w-3" />
+                <span>{lease.tenant.phone}</span>
+              </div>
+            </div>
+          </div>
 
-          <Card className="bg-neutral-900 border-neutral-800 text-white">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs text-neutral-400 font-medium">Lease Term (MYT)</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm font-semibold text-white">
-                <MalaysiaTimeDisplay date={lease.startDate} /> to{" "}
-                <MalaysiaTimeDisplay date={lease.endDate} />
+          {/* Card 2: Lease Term */}
+          <div className="glass-card glass-card-hover rounded-2xl p-5 relative overflow-hidden group">
+            <div className="flex items-center justify-between pb-3">
+              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                Lease Duration (MYT)
+              </span>
+              <div className="h-8 w-8 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                <Calendar className="h-4 w-4" />
               </div>
-              <p className="text-[11px] text-neutral-500 mt-1">
-                Monthly Rent: RM {(Number(lease.monthlyRentSen) / 100).toFixed(2)}
-              </p>
-              <p className="text-[11px] text-neutral-500">
-                Deposit: RM {(Number(lease.depositSen) / 100).toFixed(2)}
-              </p>
-            </CardContent>
-          </Card>
+            </div>
+            <div className="text-xs font-semibold text-neutral-200 font-mono">
+              <MalaysiaTimeDisplay date={lease.startDate} /> → <MalaysiaTimeDisplay date={lease.endDate} />
+            </div>
+            <div className="text-xs text-neutral-400 mt-2 space-y-0.5">
+              <p>Monthly: <strong className="text-white font-mono">RM {(Number(lease.monthlyRentSen) / 100).toFixed(2)}</strong></p>
+              <p>Deposit: <strong className="text-emerald-400 font-mono">RM {(Number(lease.depositSen) / 100).toFixed(2)}</strong></p>
+            </div>
+          </div>
 
-          <Card className="bg-neutral-900 border-neutral-800 text-white">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs text-neutral-400 font-medium">Total Invoiced</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
-                RM {(totalInvoiceSen / 100).toFixed(2)}
+          {/* Card 3: Invoiced & Paid */}
+          <div className="glass-card glass-card-hover rounded-2xl p-5 relative overflow-hidden group">
+            <div className="flex items-center justify-between pb-3">
+              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                Total Invoiced
+              </span>
+              <div className="h-8 w-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                <Receipt className="h-4 w-4" />
               </div>
-              <p className="text-[11px] text-emerald-400 mt-1">
-                Total Paid: RM {(totalPaidSen / 100).toFixed(2)}
-              </p>
-            </CardContent>
-          </Card>
+            </div>
+            <div className="text-2xl font-extrabold text-white font-mono">
+              RM {(totalInvoiceSen / 100).toFixed(2)}
+            </div>
+            <div className="flex items-center justify-between text-xs text-neutral-400 mt-2">
+              <span>Paid: <strong className="text-emerald-400 font-mono">RM {(totalPaidSen / 100).toFixed(2)}</strong></span>
+              <span className="text-emerald-400 font-medium text-[11px]">
+                {totalInvoiceSen > 0 ? `${Math.round((totalPaidSen / totalInvoiceSen) * 100)}%` : "0%"}
+              </span>
+            </div>
+          </div>
 
-          <Card className="bg-neutral-900 border-neutral-800 text-white">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs text-neutral-400 font-medium">Remaining Balance</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-amber-400">
-                RM {(remainingBalanceSen / 100).toFixed(2)}
+          {/* Card 4: Remaining Balance */}
+          <div className="glass-card glass-card-hover rounded-2xl p-5 relative overflow-hidden group">
+            <div className="flex items-center justify-between pb-3">
+              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                Remaining Balance
+              </span>
+              <div className="h-8 w-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                <AlertTriangle className="h-4 w-4" />
               </div>
-              <p className="text-[11px] text-neutral-500 mt-1">Across all scheduled periods</p>
-            </CardContent>
-          </Card>
+            </div>
+            <div className="text-2xl font-extrabold text-amber-400 font-mono">
+              RM {(remainingBalanceSen / 100).toFixed(2)}
+            </div>
+            <div className="text-xs text-neutral-400 mt-2">
+              <span>Across all scheduled periods</span>
+            </div>
+          </div>
         </div>
 
         {/* Scheduled Invoices */}
-        <Card className="bg-neutral-900 border-neutral-800 text-white">
-          <CardHeader className="pb-3 border-b border-neutral-800">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <Receipt className="h-4 w-4 text-emerald-400" />
-              Scheduled Invoices ({invoicesWithStatus.length})
-            </CardTitle>
-            <CardDescription className="text-xs text-neutral-400">
-              Generated by billing schedule rules. Invoices are settled in strict order of due date and kind.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-0">
+        <div className="glass-card rounded-2xl border border-white/[0.08] overflow-hidden">
+          <div className="p-5 border-b border-white/[0.06] flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <Receipt className="h-4 w-4 text-emerald-400" />
+                Scheduled Invoices ({invoicesWithStatus.length})
+              </h3>
+              <p className="text-xs text-neutral-400 mt-0.5">
+                Invoices generated automatically by schedule rules, settled in strict priority order (due_date ASC, deposit before rent).
+              </p>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader className="bg-white/[0.02]">
+                <TableRow className="border-white/[0.06] text-xs text-neutral-400">
+                  <TableHead className="font-semibold text-neutral-300">Kind & Period</TableHead>
+                  <TableHead className="font-semibold text-neutral-300">Period Interval</TableHead>
+                  <TableHead className="font-semibold text-neutral-300">Due Date (MYT)</TableHead>
+                  <TableHead className="font-semibold text-neutral-300">Invoice Amount</TableHead>
+                  <TableHead className="font-semibold text-neutral-300">Paid Amount</TableHead>
+                  <TableHead className="font-semibold text-neutral-300">Balance</TableHead>
+                  <TableHead className="font-semibold text-neutral-300">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {invoicesWithStatus.map((inv) => (
+                  <TableRow key={inv.id} className="border-white/[0.06] text-xs hover:bg-white/[0.02]">
+                    <TableCell className="font-bold text-white capitalize">
+                      {inv.kind} {inv.periodIndex !== null ? `#${inv.periodIndex}` : ""}
+                    </TableCell>
+                    <TableCell className="text-neutral-400 font-mono text-[11px]">
+                      {inv.periodStart && inv.periodEnd ? (
+                        <>
+                          <MalaysiaTimeDisplay date={inv.periodStart} /> →{" "}
+                          <MalaysiaTimeDisplay date={inv.periodEnd} />
+                        </>
+                      ) : (
+                        "—"
+                      )}
+                    </TableCell>
+                    <TableCell className="text-neutral-300 font-mono">
+                      <MalaysiaTimeDisplay date={inv.dueDate} />
+                    </TableCell>
+                    <TableCell className="font-bold text-white font-mono">
+                      RM {(inv.amountSen / 100).toFixed(2)}
+                    </TableCell>
+                    <TableCell className="text-emerald-400 font-mono font-medium">
+                      RM {(inv.paidSen / 100).toFixed(2)}
+                    </TableCell>
+                    <TableCell className="text-neutral-400 font-mono">
+                      RM {((inv.amountSen - inv.paidSen) / 100).toFixed(2)}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className={`text-[10px] font-semibold tracking-wide ${
+                          inv.status === "paid"
+                            ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                            : inv.status === "overdue"
+                            ? "border-rose-500/30 bg-rose-500/10 text-rose-400"
+                            : inv.status === "partially_paid"
+                            ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
+                            : "border-neutral-700 bg-neutral-800 text-neutral-300"
+                        }`}
+                      >
+                        {inv.status.toUpperCase()}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+
+        {/* Payments Table */}
+        <div className="glass-card rounded-2xl border border-white/[0.08] overflow-hidden">
+          <div className="p-5 border-b border-white/[0.06] flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <CreditCard className="h-4 w-4 text-blue-400" />
+                Recorded Payments ({lease.payments.length})
+              </h3>
+              <p className="text-xs text-neutral-400 mt-0.5">
+                Payment allocations and verification workflow. Slips stored securely in Supabase Storage.
+              </p>
+            </div>
+          </div>
+
+          {lease.payments.length === 0 ? (
+            <div className="p-8 text-center text-xs text-neutral-500">
+              No payments have been recorded for this lease yet.
+            </div>
+          ) : (
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader className="bg-neutral-950">
-                  <TableRow className="border-neutral-800 text-xs text-neutral-400">
-                    <TableHead className="text-xs">Kind & Period</TableHead>
-                    <TableHead className="text-xs">Period Range</TableHead>
-                    <TableHead className="text-xs">Due Date (MYT)</TableHead>
-                    <TableHead className="text-xs">Amount</TableHead>
-                    <TableHead className="text-xs">Paid</TableHead>
-                    <TableHead className="text-xs">Balance</TableHead>
-                    <TableHead className="text-xs">Status</TableHead>
+                <TableHeader className="bg-white/[0.02]">
+                  <TableRow className="border-white/[0.06] text-xs text-neutral-400">
+                    <TableHead className="font-semibold text-neutral-300">ID</TableHead>
+                    <TableHead className="font-semibold text-neutral-300">Method</TableHead>
+                    <TableHead className="font-semibold text-neutral-300">Amount</TableHead>
+                    <TableHead className="font-semibold text-neutral-300">Unapplied</TableHead>
+                    <TableHead className="font-semibold text-neutral-300">Received (MYT)</TableHead>
+                    <TableHead className="font-semibold text-neutral-300">Status</TableHead>
+                    <TableHead className="font-semibold text-neutral-300">Slip Proof</TableHead>
+                    <TableHead className="text-right font-semibold text-neutral-300">Manager Workflow</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {invoicesWithStatus.map((inv) => (
-                    <TableRow key={inv.id} className="border-neutral-800 text-xs">
-                      <TableCell className="font-semibold text-white capitalize">
-                        {inv.kind} {inv.periodIndex !== null ? `#${inv.periodIndex}` : ""}
+                  {lease.payments.map((p) => (
+                    <TableRow key={p.id} className="border-white/[0.06] text-xs hover:bg-white/[0.02]">
+                      <TableCell className="font-mono text-neutral-400">{p.id}</TableCell>
+                      <TableCell className="capitalize font-medium text-white">
+                        {p.method.replace("_", " ")}
                       </TableCell>
-                      <TableCell className="text-neutral-400">
-                        {inv.periodStart && inv.periodEnd ? (
-                          <>
-                            <MalaysiaTimeDisplay date={inv.periodStart} /> to{" "}
-                            <MalaysiaTimeDisplay date={inv.periodEnd} />
-                          </>
-                        ) : (
-                          "—"
-                        )}
-                      </TableCell>
-                      <TableCell className="text-neutral-300 font-mono">
-                        <MalaysiaTimeDisplay date={inv.dueDate} />
-                      </TableCell>
-                      <TableCell className="font-semibold text-white">
-                        RM {(inv.amountSen / 100).toFixed(2)}
-                      </TableCell>
-                      <TableCell className="text-emerald-400 font-medium">
-                        RM {(inv.paidSen / 100).toFixed(2)}
+                      <TableCell className="font-bold text-emerald-400 font-mono">
+                        RM {(Number(p.amountSen) / 100).toFixed(2)}
                       </TableCell>
                       <TableCell className="text-neutral-400 font-mono">
-                        RM {((inv.amountSen - inv.paidSen) / 100).toFixed(2)}
+                        RM {(Number(p.unappliedSen) / 100).toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-neutral-300 font-mono">
+                        <MalaysiaTimeDisplay date={p.receivedAt} type="datetime" />
                       </TableCell>
                       <TableCell>
                         <Badge
                           variant="outline"
-                          className={
-                            inv.status === "paid"
+                          className={`text-[10px] font-semibold tracking-wide ${
+                            p.status === "approved"
                               ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-                              : inv.status === "overdue"
-                              ? "border-rose-500/30 bg-rose-500/10 text-rose-400"
-                              : inv.status === "partially_paid"
+                              : p.status === "pending_verification"
                               ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
-                              : "border-neutral-700 bg-neutral-800 text-neutral-300"
-                          }
+                              : "border-rose-500/30 bg-rose-500/10 text-rose-400"
+                          }`}
                         >
-                          {inv.status.toUpperCase()}
+                          {p.status.toUpperCase()}
                         </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {p.slipPath ? (
+                          <a
+                            href={`/api/leases/${lease.id}/payments/${p.id}/slip`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/20 text-[11px] font-mono border border-emerald-500/20 transition-all"
+                          >
+                            <FileText className="h-3 w-3" />
+                            <span>View Slip</span>
+                            <ExternalLink className="h-2.5 w-2.5" />
+                          </a>
+                        ) : (
+                          <span className="text-neutral-600">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {managerMember && (
+                          <PaymentActions
+                            paymentId={p.id}
+                            orgId={lease.orgId}
+                            actorId={managerMember.userId}
+                            isManager={true}
+                            status={p.status as "pending_verification" | "approved" | "rejected" | "voided"}
+                            amountSen={Number(p.amountSen)}
+                          />
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Payments Table */}
-        <Card className="bg-neutral-900 border-neutral-800 text-white">
-          <CardHeader className="pb-3 border-b border-neutral-800">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <CreditCard className="h-4 w-4 text-blue-400" />
-              Recorded Payments ({lease.payments.length})
-            </CardTitle>
-            <CardDescription className="text-xs text-neutral-400">
-              Payments allocated to invoices. Bank transfer slips are stored in Supabase Storage.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-0">
-            {lease.payments.length === 0 ? (
-              <div className="p-8 text-center text-xs text-neutral-500">
-                No payments have been recorded for this lease yet.
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader className="bg-neutral-950">
-                    <TableRow className="border-neutral-800 text-xs text-neutral-400">
-                      <TableHead className="text-xs">Payment ID</TableHead>
-                      <TableHead className="text-xs">Method</TableHead>
-                      <TableHead className="text-xs">Amount</TableHead>
-                      <TableHead className="text-xs">Unapplied</TableHead>
-                      <TableHead className="text-xs">Received (MYT)</TableHead>
-                      <TableHead className="text-xs">Status</TableHead>
-                      <TableHead className="text-xs">Slip / Document</TableHead>
-                      <TableHead className="text-xs text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {lease.payments.map((p) => (
-                      <TableRow key={p.id} className="border-neutral-800 text-xs">
-                        <TableCell className="font-mono text-neutral-400">{p.id}</TableCell>
-                        <TableCell className="capitalize text-white">
-                          {p.method.replace("_", " ")}
-                        </TableCell>
-                        <TableCell className="font-semibold text-emerald-400">
-                          RM {(Number(p.amountSen) / 100).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-neutral-400 font-mono">
-                          RM {(Number(p.unappliedSen) / 100).toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-neutral-300 font-mono">
-                          <MalaysiaTimeDisplay date={p.receivedAt} type="datetime" />
-                        </TableCell>
-                        <TableCell>
-                          <Badge
-                            variant="outline"
-                            className={
-                              p.status === "approved"
-                                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-                                : p.status === "pending_verification"
-                                ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
-                                : "border-rose-500/30 bg-rose-500/10 text-rose-400"
-                            }
-                          >
-                            {p.status.toUpperCase()}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {p.slipPath ? (
-                            <a
-                              href={`/api/leases/${lease.id}/payments/${p.id}/slip`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-blue-500/10 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 text-[11px] font-mono border border-blue-500/20"
-                            >
-                              <FileText className="h-3 w-3" />
-                              <span>View Slip</span>
-                              <ExternalLink className="h-2.5 w-2.5" />
-                            </a>
-                          ) : (
-                            <span className="text-neutral-600">—</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {managerMember && (
-                            <PaymentActions
-                              paymentId={p.id}
-                              orgId={lease.orgId}
-                              actorId={managerMember.userId}
-                              isManager={true}
-                              status={p.status as "pending_verification" | "approved" | "rejected" | "voided"}
-                              amountSen={Number(p.amountSen)}
-                            />
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 }

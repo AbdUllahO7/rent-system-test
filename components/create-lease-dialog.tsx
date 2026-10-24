@@ -115,14 +115,14 @@ export function CreateLeaseDialog({
         render={
           <Button
             size="sm"
-            className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center gap-1.5 shadow-xs"
+            className="h-9 px-3.5 rounded-xl border border-white/[0.12] bg-white/[0.04] hover:bg-white/[0.08] text-white font-semibold text-xs flex items-center gap-1.5 transition-all shadow-sm"
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="h-3.5 w-3.5 text-emerald-400" />
             Create Lease
           </Button>
         }
       />
-      <DialogContent className="sm:max-w-2xl bg-neutral-900 border-neutral-800 text-neutral-100 max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-2xl glass-card border-white/[0.1] text-neutral-100 max-h-[90vh] overflow-y-auto rounded-3xl p-6 shadow-2xl">
         <DialogHeader>
           <DialogTitle className="text-base text-white flex items-center gap-2">
             <Calendar className="h-4 w-4 text-emerald-400" />

@@ -71,20 +71,25 @@ export function TenantProfileCard({
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-neutral-800 bg-neutral-900/80 gap-3">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl border border-white/[0.08] bg-white/[0.02] gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="h-11 w-11 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-teal-400/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center font-bold text-sm shadow-md shadow-emerald-500/10">
             <User className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-white">{fullName}</h3>
-            <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-400 mt-0.5">
-              <span className="flex items-center gap-1">
-                <Mail className="h-3 w-3 text-neutral-500" />
+            <div className="flex items-center gap-2">
+              <h3 className="text-base font-bold text-white">{fullName}</h3>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+                Verified Tenant
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-4 text-xs text-neutral-400 mt-1">
+              <span className="flex items-center gap-1.5">
+                <Mail className="h-3.5 w-3.5 text-neutral-500" />
                 {email}
               </span>
-              <span className="flex items-center gap-1 text-neutral-300 font-mono">
-                <Phone className="h-3 w-3 text-emerald-400" />
+              <span className="flex items-center gap-1.5 text-neutral-200 font-mono font-medium">
+                <Phone className="h-3.5 w-3.5 text-emerald-400" />
                 {phone}
               </span>
             </div>
@@ -95,15 +100,15 @@ export function TenantProfileCard({
           size="sm"
           variant="outline"
           onClick={handleOpen}
-          className="h-8 text-xs border-neutral-700 bg-neutral-800/60 hover:bg-neutral-800 text-neutral-200"
+          className="h-9 px-3.5 rounded-xl text-xs border-white/[0.12] bg-white/[0.04] hover:bg-white/[0.08] text-neutral-200 hover:text-white transition-all"
         >
-          <Edit3 className="h-3 w-3 mr-1.5 text-emerald-400" />
+          <Edit3 className="h-3.5 w-3.5 mr-1.5 text-emerald-400" />
           Edit Phone Number
         </Button>
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-md bg-neutral-900 border-neutral-800 text-neutral-100">
+        <DialogContent className="sm:max-w-md glass-card border-white/[0.1] text-neutral-100 rounded-3xl p-6 shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-base text-white flex items-center gap-2">
               <Phone className="h-4 w-4 text-emerald-400" />

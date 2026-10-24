@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, XCircle, Clock, ArrowLeft } from "lucide-react";
+import { CheckCircle2, XCircle, Clock, ArrowLeft, Building2, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -16,18 +15,21 @@ export default async function PaymentReturnPage({
 
   if (!billId) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center p-4">
-        <Card className="max-w-md w-full bg-neutral-900 border-neutral-800 text-white">
-          <CardHeader>
-            <CardTitle className="text-rose-400">Missing Bill Information</CardTitle>
-            <CardDescription className="text-neutral-400">No bill ID was provided in the return URL.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href="/">
-              <Button variant="outline" className="w-full border-neutral-700">Back to Portal</Button>
-            </Link>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen text-white flex items-center justify-center p-4">
+        <div className="glass-card max-w-md w-full rounded-2xl p-6 border border-white/[0.08] text-center space-y-4">
+          <div className="h-12 w-12 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
+            <XCircle className="h-6 w-6" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-rose-400">Missing Bill Information</h2>
+            <p className="text-xs text-neutral-400 mt-1">No bill ID was provided in the return URL.</p>
+          </div>
+          <Link href="/">
+            <Button variant="outline" className="w-full border-white/[0.1] bg-white/[0.04] text-neutral-200 hover:text-white">
+              Back to Dashboard
+            </Button>
+          </Link>
+        </div>
       </div>
     );
   }
@@ -47,18 +49,21 @@ export default async function PaymentReturnPage({
 
   if (!bill) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center p-4">
-        <Card className="max-w-md w-full bg-neutral-900 border-neutral-800 text-white">
-          <CardHeader>
-            <CardTitle className="text-rose-400">Bill Not Found</CardTitle>
-            <CardDescription className="text-neutral-400">The bill ID &quot;{billId}&quot; does not exist in our database.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href="/">
-              <Button variant="outline" className="w-full border-neutral-700">Back to Portal</Button>
-            </Link>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen text-white flex items-center justify-center p-4">
+        <div className="glass-card max-w-md w-full rounded-2xl p-6 border border-white/[0.08] text-center space-y-4">
+          <div className="h-12 w-12 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
+            <XCircle className="h-6 w-6" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-rose-400">Bill Not Found</h2>
+            <p className="text-xs text-neutral-400 mt-1">The bill ID &quot;{billId}&quot; does not exist in our database.</p>
+          </div>
+          <Link href="/">
+            <Button variant="outline" className="w-full border-white/[0.1] bg-white/[0.04] text-neutral-200 hover:text-white">
+              Back to Dashboard
+            </Button>
+          </Link>
+        </div>
       </div>
     );
   }
@@ -70,83 +75,84 @@ export default async function PaymentReturnPage({
   const ringgitAmount = (Number(bill.amountSen) / 100).toFixed(2);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center p-4 font-sans">
-      <Card className="max-w-lg w-full bg-neutral-900 border-neutral-800 text-white shadow-2xl">
-        <CardHeader className="text-center pb-2">
-          <div className="flex justify-center mb-3">
+    <div className="min-h-screen text-white flex items-center justify-center p-4 font-sans">
+      <div className="glass-card max-w-lg w-full rounded-3xl border border-white/[0.1] shadow-2xl p-8 relative overflow-hidden space-y-6">
+        <div className="text-center space-y-3">
+          <div className="flex justify-center">
             {isPaid && (
-              <div className="h-16 w-16 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400">
-                <CheckCircle2 className="h-10 w-10" />
+              <div className="h-16 w-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/25 text-emerald-400 shadow-lg shadow-emerald-500/20">
+                <CheckCircle2 className="h-9 w-9" />
               </div>
             )}
             {isFailed && (
-              <div className="h-16 w-16 rounded-full bg-rose-500/10 flex items-center justify-center border border-rose-500/20 text-rose-400">
-                <XCircle className="h-10 w-10" />
+              <div className="h-16 w-16 rounded-2xl bg-rose-500/10 flex items-center justify-center border border-rose-500/25 text-rose-400 shadow-lg shadow-rose-500/20">
+                <XCircle className="h-9 w-9" />
               </div>
             )}
             {isPending && (
-              <div className="h-16 w-16 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/20 text-amber-400">
-                <Clock className="h-10 w-10 animate-pulse" />
+              <div className="h-16 w-16 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/25 text-amber-400 shadow-lg shadow-amber-500/20">
+                <Clock className="h-9 w-9 animate-pulse" />
               </div>
             )}
           </div>
-          <CardTitle className="text-xl">
-            {isPaid && "Payment Confirmed & Settled"}
-            {isFailed && "Payment Failed"}
-            {isPending && "Payment Pending Gateway Confirmation"}
-          </CardTitle>
-          <CardDescription className="text-neutral-400 text-xs">
-            {isPaid && "Your payment has been successfully recorded and allocated to your lease invoices."}
-            {isFailed && "The gateway reported a payment failure. No funds were collected."}
-            {isPending && "We are awaiting final webhook confirmation from the payment gateway."}
-          </CardDescription>
-        </CardHeader>
 
-        <CardContent className="space-y-4 pt-4 border-t border-neutral-800/80">
-          <div className="bg-neutral-950 p-4 rounded-lg space-y-2.5 text-xs font-mono">
-            <div className="flex justify-between">
-              <span className="text-neutral-500">Bill ID:</span>
-              <span className="text-neutral-300 select-all">{bill.id}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-neutral-500">Unit:</span>
-              <span className="text-white font-sans">{bill.lease.unit.name}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-neutral-500">Tenant:</span>
-              <span className="text-white font-sans">{bill.lease.tenant.fullName}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-neutral-500">Amount:</span>
-              <span className="text-emerald-400 font-bold">RM {ringgitAmount}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-neutral-500">Database Status:</span>
-              <Badge
-                variant="outline"
-                className={
-                  isPaid
-                    ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-                    : isFailed
-                    ? "border-rose-500/30 bg-rose-500/10 text-rose-400"
-                    : "border-amber-500/30 bg-amber-500/10 text-amber-400"
-                }
-              >
-                {bill.status.toUpperCase()}
-              </Badge>
-            </div>
+          <div>
+            <h2 className="text-2xl font-black text-white tracking-tight">
+              {isPaid && "Payment Confirmed & Settled"}
+              {isFailed && "Payment Failed"}
+              {isPending && "Awaiting Webhook Confirmation"}
+            </h2>
+            <p className="text-xs text-neutral-400 max-w-sm mx-auto mt-1.5 leading-relaxed">
+              {isPaid && "Your transaction was securely verified. An approved payment has been created and applied to your rental invoices."}
+              {isFailed && "The gateway reported a payment failure. No funds were collected from your account."}
+              {isPending && "Your transaction is pending final webhook signature confirmation from the gateway."}
+            </p>
           </div>
+        </div>
 
-          <div className="pt-2">
-            <Link href="/">
-              <Button className="w-full bg-neutral-800 hover:bg-neutral-700 text-white flex items-center justify-center gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Return to Tenant Dashboard
-              </Button>
-            </Link>
+        <div className="bg-white/[0.02] border border-white/[0.06] p-5 rounded-2xl space-y-3 text-xs font-mono">
+          <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
+            <span className="text-neutral-500">Bill ID:</span>
+            <span className="text-neutral-300 font-semibold select-all">{bill.id}</span>
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
+            <span className="text-neutral-500">Unit:</span>
+            <span className="text-white font-sans font-semibold">Unit {bill.lease.unit.name}</span>
+          </div>
+          <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
+            <span className="text-neutral-500">Tenant:</span>
+            <span className="text-white font-sans">{bill.lease.tenant.fullName}</span>
+          </div>
+          <div className="flex justify-between items-center py-1 border-b border-white/[0.04]">
+            <span className="text-neutral-500">Settled Amount:</span>
+            <span className="text-emerald-400 font-bold text-sm">RM {ringgitAmount}</span>
+          </div>
+          <div className="flex justify-between items-center pt-1">
+            <span className="text-neutral-500">Database Status:</span>
+            <Badge
+              variant="outline"
+              className={`text-xs font-semibold ${
+                isPaid
+                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                  : isFailed
+                  ? "border-rose-500/30 bg-rose-500/10 text-rose-400"
+                  : "border-amber-500/30 bg-amber-500/10 text-amber-400"
+              }`}
+            >
+              {bill.status.toUpperCase()}
+            </Badge>
+          </div>
+        </div>
+
+        <div className="pt-2">
+          <Link href="/">
+            <Button className="w-full h-11 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition-all">
+              <ArrowLeft className="h-4 w-4" />
+              Return to Dashboard
+            </Button>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

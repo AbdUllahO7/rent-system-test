@@ -164,7 +164,7 @@ export function PaymentActions({
 
       {/* Reject Dialog */}
       <Dialog open={rejectOpen} onOpenChange={setRejectOpen}>
-        <DialogContent className="sm:max-w-md bg-neutral-900 border-neutral-800 text-neutral-100">
+        <DialogContent className="sm:max-w-md glass-card border-white/[0.1] text-neutral-100 rounded-3xl p-6 shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-base text-rose-400 flex items-center gap-2">
               <AlertTriangle className="h-4 w-4" />
@@ -225,7 +225,7 @@ export function PaymentActions({
 
       {/* Void Dialog (Confirmation Step + Reason) */}
       <Dialog open={voidOpen} onOpenChange={setVoidOpen}>
-        <DialogContent className="sm:max-w-md bg-neutral-900 border-neutral-800 text-neutral-100">
+        <DialogContent className="sm:max-w-md glass-card border-white/[0.1] text-neutral-100 rounded-3xl p-6 shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-base text-rose-400 flex items-center gap-2">
               <Ban className="h-4 w-4" />

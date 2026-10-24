@@ -100,7 +100,7 @@ export function TenantPayNow({ leaseId, amountDueNowSen }: TenantPayNowProps) {
         <Button
           onClick={handlePayNow}
           disabled={isPending || amountDueNowSen <= 0}
-          className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-4 h-9 shadow-md flex items-center gap-2"
+          className="w-full h-11 bg-white hover:bg-neutral-100 text-neutral-950 font-bold text-xs rounded-xl shadow-lg shadow-black/20 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending ? (
             <>
@@ -109,7 +109,7 @@ export function TenantPayNow({ leaseId, amountDueNowSen }: TenantPayNowProps) {
             </>
           ) : (
             <>
-              <CreditCard className="h-4 w-4" />
+              <CreditCard className="h-4 w-4 text-emerald-600" />
               Pay Now (Online Gateway)
             </>
           )}
@@ -118,7 +118,7 @@ export function TenantPayNow({ leaseId, amountDueNowSen }: TenantPayNowProps) {
 
       {/* Gateway Bill Dialog */}
       <Dialog open={billModalOpen} onOpenChange={setBillModalOpen}>
-        <DialogContent className="sm:max-w-md bg-neutral-900 border-neutral-800 text-neutral-100">
+        <DialogContent className="sm:max-w-md glass-card border-white/[0.1] text-neutral-100 rounded-3xl p-6 shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-base text-white flex items-center gap-2">
               <CreditCard className="h-4 w-4 text-emerald-400" />
